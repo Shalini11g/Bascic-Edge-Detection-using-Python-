@@ -1,0 +1,47 @@
+from helper_functions import *
+
+#-----------------------FILL IN THE FOLDER WHERE YOUR IMAGE EXISTS--------------------------
+datafolder = "C:/Users/Shalini/Desktop/5.jpg"
+imgpath = datafolder 
+#----------------------------------------STARTER CODE----------------------------------------
+# Convert the color image to grayscale and returns the grayscale pixels 
+pixel_values = read_colorimg(imgpath)
+# The returned pixel values INCLUDE 2 boundary rows and 2 boundary colns. Therefore,
+lengthofrow = len(pixel_values) - 2
+lengthofcoloumn = len(pixel_values[0]) - 2
+#
+#----------------------------------------WRITE YOUR CODE HERE----------------------------------------
+# Create a data structure to store updated pixel information
+new_pixel_values = [[0 for a in range(lengthofcoloumn)] for b in range(lengthofrow)]
+# Define the 3 x 3 mask as a tuple of tuples
+mask = ((-1,-1,-1),(-1,8,-1),(-1,-1,-1))
+
+# Implement a function to slice a part from the image as a 2D list
+def get_slice_2d_list(pixelvalues,position1,position2):
+    sha=[p[position2-1:position2+2] for p in pixelvalues[position1-1:position1+2]]
+    return sha
+
+# Implement a function to flatten a 2D list or a 2D tuple
+def flatten(flat_list):
+    pop=[b for a in flat_list for b in a]
+    return pop
+
+# For each of the pixel values, excluding the boundary values
+    # Create little local 3x3 box using list slicing
+for r in range(1,lengthofrow+1):
+    for c in range(1,lengthofcoloumn+1):
+        neighbour_pixels = get_slice_2d_list(pixel_values,r,c)
+        pix=flatten(neighbour_pixels)
+        msk=flatten(mask)
+        mult_result=list( map(lambda x, y: x * y, pix, msk))
+        updated=0
+        for i in range(0,len(mult_result)):
+            updated=updated+mult_result[i]
+            new_pixel_values[r-1][c-1]=updated    
+    # Sum all the multiplied values and set the new pixel value
+#        
+#----------------------------------------END YOUR CODE HERE----------------------------------------
+# Verify your result
+verify_result(pixel_values, new_pixel_values, mask)
+# View the original image and the edges of the image
+view_images(imgpath, new_pixel_values)
